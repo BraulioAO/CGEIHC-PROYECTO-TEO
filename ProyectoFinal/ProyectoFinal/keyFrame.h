@@ -38,7 +38,6 @@ void saveFrame(void){
 	KeyFrame[FrameIndex].posY = posY;
 	KeyFrame[FrameIndex].posZ = posZ;
 	KeyFrame[FrameIndex].rotAvion = rotAvion;
-	KeyFrame[FrameIndex].abrirPuerta = abrirPuerta;
 	KeyFrame[FrameIndex].frameIndex = FrameIndex+1;
 	FrameIndex++;
 }
@@ -48,7 +47,6 @@ void resetElements(void){
 	posY = KeyFrame[0].posY;
 	posZ = KeyFrame[0].posZ;
 	rotAvion = KeyFrame[0].rotAvion;
-	abrirPuerta = KeyFrame[0].abrirPuerta;
 }
 
 void interpolation(void)

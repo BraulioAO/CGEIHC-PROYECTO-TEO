@@ -3,7 +3,9 @@ void LoadTextures(void);
 unsigned int generateTextures(char*, bool);
 
 //Texture
-unsigned int	t_piso;
+unsigned int	t_pasto;
+unsigned int	t_dia;
+unsigned int	t_noche;
 
 
 unsigned int generateTextures(const char* filename, bool alfa)
@@ -40,5 +42,7 @@ unsigned int generateTextures(const char* filename, bool alfa)
 
 void LoadTextures()
 {
-	t_piso = generateTextures("Texturas/piso.jpg", 0); //El 1 indica que hay canal alfa, importante agregar
+	t_pasto = generateTextures("Texturas/pasto.jpg", 0); //El 1 indica que hay canal alfa, importante agregar
+	t_dia = generateTextures("Texturas/dia.jpg", 0);
+	t_noche = generateTextures("Texturas/noche.jpg", 0);
 }

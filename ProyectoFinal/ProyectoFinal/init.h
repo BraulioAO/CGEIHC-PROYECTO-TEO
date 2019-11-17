@@ -5,7 +5,7 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 
 //Camera
-Camera camera(glm::vec3(0.0f, 12.0f, 22.0f));  //Posición inicial de la cámara
+Camera camera(glm::vec3(0.0f, 25.0f, 150.0f));  //Posición inicial de la cámara
 
 bool firstMouse = false;
 
@@ -14,7 +14,7 @@ double	deltaTime = 0.0f,
 		lastFrame = 0.0f;
 
 //For Keyboard
-int	estadoLuz = 0,
+int	estadoLuz = 1,
 estadoArranque = 1;
 
 float	rotArr = 0.0f;
@@ -94,10 +94,6 @@ void my_input(GLFWwindow *window, int key, int scancode, int action, int mode)
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
 		estadoLuz = 0;
 
-	if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS)
-		abrirPuerta = 0;
-	if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS)
-		abrirPuerta = 1;
 
 	//Secuencia de arranque
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)

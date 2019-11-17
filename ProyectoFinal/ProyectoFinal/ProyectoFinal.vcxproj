@@ -140,6 +140,8 @@
     <None Include="shaders\shader_lamp.vs" />
     <None Include="shaders\shader_Lights.fs" />
     <None Include="shaders\shader_Lights.vs" />
+    <None Include="shaders\shader_skybox.fs" />
+    <None Include="shaders\shader_skybox.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

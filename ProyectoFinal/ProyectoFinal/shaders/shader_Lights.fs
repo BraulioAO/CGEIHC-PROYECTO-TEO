@@ -1,5 +1,6 @@
 #version 330 core
-#define NUMBER  7
+#define NUMBER  1
+#define NUMBERAMB  2
 out vec4 FragColor;
 
 in vec3 FragPos;
@@ -54,7 +55,7 @@ struct SpotLight
 };
 
 uniform vec3 viewPos;
-uniform DirLight dirLight;
+uniform DirLight dirLight[NUMBERAMB];
 uniform PointLight pointLight[NUMBER];
 uniform SpotLight spotLight;
 //uniform Material material;
@@ -76,7 +77,8 @@ void main()
 	vec3 result = vec3(0.0f);
 
     //Directional lighting
-    result += CalcDirLight(dirLight, norm, viewDir);
+	for(int i=0; i<NUMBERAMB; i++)
+		result += CalcDirLight(dirLight[i], norm, viewDir);
 
     //Point Light
 	for(int i=0; i<NUMBER; i++)
