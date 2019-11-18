@@ -5,7 +5,9 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 
 //Camera
-Camera camera(glm::vec3(0.0f, 25.0f, 150.0f));  //Posición inicial de la cámara
+Camera camera1(glm::vec3(-30.0f, 105.0f, 350.0f));  //Posición inicial de la cámara
+Camera camera2(glm::vec3(0.0f, 30.0f, 35.0f));  //Posición inicial de la cámara
+Camera *camera;
 
 bool firstMouse = false;
 
@@ -15,14 +17,10 @@ double	deltaTime = 0.0f,
 
 //For Keyboard
 int	estadoLuz = 1,
-estadoArranque = 1;
+cameraActual = 1;
 
 float	rotArr = 0.0f;
 
-float	movX = 0.0f,
-		movY = 0.0f,
-		movZ = -5.0f,
-		rotX = 0.0f;
 
 //Movimiento luz
 float movLuzX = 0.0f;
@@ -79,13 +77,13 @@ void my_input(GLFWwindow *window, int key, int scancode, int action, int mode)
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		camera.ProcessKeyboard(FORWARD, (float)deltaTime);
+		camera->ProcessKeyboard(FORWARD, (float)deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		camera.ProcessKeyboard(BACKWARD, (float)deltaTime);
+		camera->ProcessKeyboard(BACKWARD, (float)deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		camera.ProcessKeyboard(LEFT, (float)deltaTime);
+		camera->ProcessKeyboard(LEFT, (float)deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		camera.ProcessKeyboard(RIGHT, (float)deltaTime);
+		camera->ProcessKeyboard(RIGHT, (float)deltaTime);
 
 	//To Configure Model
 	//Endendido y apagado de luces
@@ -97,40 +95,33 @@ void my_input(GLFWwindow *window, int key, int scancode, int action, int mode)
 
 	//Secuencia de arranque
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
-		estadoArranque = 1;
+		cameraActual = 1;
 	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
-		estadoArranque = 0;
+		cameraActual = 2;
 
-/*
 	if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS)
-		posZ++;
+		posZ = posZ - 0.5f;
 	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
-		posZ--;
+		posZ = posZ + 0.5f;
 	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
-		posX--;
+		posY = posY - 0.5f;
 	if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
-		posX++;
-	if (glfwGetKey(window, GLFW_KEY_8) == GLFW_PRESS)
-		posY--;
-	if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS)
-		posY++;
-	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
-		rotAvion--;
-	if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
-		rotAvion++;
-	*/
-
-
+		posY = posY + 0.5f;
 	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
-		movLuzX++;
+		rotX++;
 	if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
-		movLuzX--;
+		rotX--;
+
+	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
+		rotCol++;
+	if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
+		rotCol--;
 
 	//To save data keyFrame
-	//if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
-	//	saveFile();
-	//if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
-	//	openFile();
+	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
+		saveFile();
+	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+		openFile();
 	//if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
 	//	mostrarDatos();
 
@@ -188,12 +179,12 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	lastX = xpos;
 	lastY = ypos;
 
-	camera.ProcessMouseMovement(xoffset, yoffset);
+	camera->ProcessMouseMovement(xoffset, yoffset);
 }
 
 // glfw: whenever the mouse scroll wheel scrolls, this callback is called
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	camera.ProcessMouseScroll(yoffset);
+	camera->ProcessMouseScroll(yoffset);
 }

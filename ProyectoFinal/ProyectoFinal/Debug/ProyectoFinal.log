@@ -1,0 +1,7 @@
+﻿  main.cpp
+c:\users\braulio\documents\git\cgeihc-proyecto-teo\proyectofinal\proyectofinal\main.cpp(11): warning C4005: '_CRT_SECURE_NO_WARNINGS': redefinición de macro
+  c:\users\braulio\documents\git\cgeihc-proyecto-teo\proyectofinal\proyectofinal\main.cpp: note: vea la definición anterior de '_CRT_SECURE_NO_WARNINGS'
+c:\users\braulio\documents\git\cgeihc-proyecto-teo\proyectofinal\proyectofinal\camera.h(73): warning C4305: 'inicializando': truncamiento de 'double' a 'float'
+c:\users\braulio\documents\git\cgeihc-proyecto-teo\proyectofinal\proyectofinal\init.h(182): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos
+c:\users\braulio\documents\git\cgeihc-proyecto-teo\proyectofinal\proyectofinal\init.h(189): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos
+  ProyectoFinal.vcxproj -> C:\Users\Braulio\Documents\Git\CGEIHC-PROYECTO-TEO\ProyectoFinal\Debug\ProyectoFinal.exe

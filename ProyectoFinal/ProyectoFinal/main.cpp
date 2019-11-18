@@ -32,7 +32,10 @@ GLfloat contador = 0;
 
 void animate(void)
 {
-		
+	if (cameraActual == 1)
+		camera = &camera1;
+	else if (cameraActual == 2)
+		camera = &camera2;
 
 
 	if (estadoLuz == 1)
@@ -61,10 +64,9 @@ void animate(void)
 		else
 		{
 			//Draw animation
-			posX += incX;
 			posY += incY;
 			posZ += incZ;
-			rotAvion += rotInc;
+			rotX += incRotX;
 
 			i_curr_steps++;
 		}
@@ -74,7 +76,8 @@ void animate(void)
 }
 
 void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba, Model carpa, Model carpaInt,
-			 Model grada)
+			 Model grada, Model cerca, Model taquilla, Model oso, Model pelota, Model canon, Model trampolin,
+			 Model elefante, Model zancos, Model plataforma, Model payaso, Model columpio)
 {
 	//Lighting
 	//float posLuzX = movLuzX;
@@ -90,7 +93,7 @@ void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba
 
 
 	shader.use();
-	shader.setVec3("viewPos", camera.Position);
+	shader.setVec3("viewPos", camera->Position);
 
 	//Luz direccional, fuente infinita
 	shader.setVec3("dirLight[0].direction", lightDirection1);      // Se pasa la direccion de la fuente de luz direccional
@@ -166,8 +169,8 @@ void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba
 	glm::mat4 projection = glm::mat4(1.0f);	//This matrix is for Projection
 
 	//Use "projection" to include Camera
-	projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1600.0f);
-	view = camera.GetViewMatrix();
+	projection = glm::perspective(glm::radians(camera->Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1600.0f);
+	view = camera->GetViewMatrix();
 
 	view = glm::scale(view, glm::vec3(2.0f, 2.0f, 2.0f));
 //	view = glm::scale(view, glm::vec3(1.0f, 1.0f, 1.0f));
@@ -250,7 +253,7 @@ void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba
 	centro = glm::mat4(1.0f);
 	//origenHab = glm::translate(origenHab, glm::vec3(posX, 0.0f, 0.0f));
 	model = glm::translate(centro, glm::vec3(0.0f, -0.4f, 0.0f));
-	model = glm::scale(model, glm::vec3(410.0f, 1.0f, 410.0f));
+	model = glm::scale(model, glm::vec3(610.0f, 1.0f, 610.0f));
 	shader.setMat4("model", model);
 	glBindTexture(GL_TEXTURE_2D, t_pasto);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -267,25 +270,88 @@ void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba
 	shader.setMat4("model", model);
 	carpa.Draw(shader);
 	//CARPA INTERIOR
-
 	model = glm::translate(origenCarpa, glm::vec3(0.0f, -0.15f, 0.0f));
 	model = glm::scale(model, glm::vec3(24.97, 27.97f, 24.97f));
 	shader.setMat4("model", model);
 	carpaInt.Draw(shader);
-
+	//GRADA IZQUIERDA
 	model = glm::rotate(origenCarpa, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	model = glm::translate(model, glm::vec3(-3.0f, 0.0f, -20.0f));
 	model = glm::scale(model, glm::vec3(1.0, 1.5, 1.0));
 	shader.setMat4("model", model);
 	grada.Draw(shader);
-
+	//GRADA DERECHA
 	model = glm::rotate(origenCarpa, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	model = glm::translate(model, glm::vec3(3.2f, 0.0f, -23.5f));
 	model = glm::scale(model, glm::vec3(1.0, 1.5, 1.0));
 	shader.setMat4("model", model);
 	grada.Draw(shader);
-
-
+	//CERCA
+	model = glm::scale(origenCarpa, glm::vec3(1.0, 0.6, 1.0));
+	shader.setMat4("model", model);
+	cerca.Draw(shader);
+	//TAQUILLA
+	model = glm::translate(origenCarpa, glm::vec3(40.0f, 0.0f, 85.0f));
+	shader.setMat4("model", model);
+	taquilla.Draw(shader);
+	//OSO SOBRE PELOTA
+	model = glm::translate(origenCarpa, glm::vec3(0.0f, 0.0f, -10.0f));
+	shader.setMat4("model", model);
+	oso.Draw(shader);
+	model = glm::translate(origenCarpa, glm::vec3(0.0f, 0.0f, -10.0f));
+	shader.setMat4("model", model);
+	pelota.Draw(shader);
+	//CAÑON
+	model = glm::translate(origenCarpa, glm::vec3(-14.0f, 0.0f, -16.0f));
+	shader.setMat4("model", model);
+	canon.Draw(shader);
+	//TRAMPOLIN
+	model = glm::translate(origenCarpa, glm::vec3(19.0f, 0.0f, 20.0f));
+	model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(1.5f, 1.0f, 1.2f));
+	shader.setMat4("model", model);
+	trampolin.Draw(shader);
+	//ELEFANTE
+	model = glm::translate(origenCarpa, glm::vec3(-40.0f, 0.0f, 55.0f));
+	shader.setMat4("model", model);
+	elefante.Draw(shader);
+	//ZANCOS RECARGADOS
+	model = glm::translate(origenCarpa, glm::vec3(-4.0f, 0.0f, -22.0f));
+	shader.setMat4("model", model);
+	zancos.Draw(shader);
+	model = glm::translate(model, glm::vec3(8.0f, 0.0f, 0.0f));
+	shader.setMat4("model", model);
+	zancos.Draw(shader);
+	model = glm::translate(model, glm::vec3(8.0f, 0.0f, 0.0f));
+	shader.setMat4("model", model);
+	zancos.Draw(shader);
+	//PLATAFORMA
+	model = glm::translate(origenCarpa, glm::vec3(19.2f, 0.0f, 2.5f));
+	model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.8f, 0.9f, 0.5f));
+	shader.setMat4("model", model);
+	plataforma.Draw(shader);
+	model = glm::translate(origenCarpa, glm::vec3(-17.0f, 0.0f, 3.0f));
+	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.8f, 0.9f, 0.5f));
+	shader.setMat4("model", model);
+	plataforma.Draw(shader);
+	//PAYASO
+	model = glm::translate(origenCarpa, glm::vec3(-14.5f, 2.0f, -16.5f));
+	model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::rotate(model, glm::radians(35.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(0.0f, posY, posZ));
+	model = glm::rotate(model, glm::radians(rotX), glm::vec3(1.0f, 0.0f, 0.0f));
+	//model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	//model = glm::scale(model, glm::vec3(0.8f, 0.9f, 0.5f));
+	shader.setMat4("model", model);
+	payaso.Draw(shader);
+	//COLUMPIO
+	model = glm::translate(origenCarpa, glm::vec3(0.0f, 50.0f, 0.0f));
+	model = glm::rotate(model, glm::radians(180.0f+rotCol), glm::vec3(0.0f, 0.0f, 1.0f));
+	model = glm::scale(model, glm::vec3(1.0f, 1.8f, 1.0f));
+	shader.setMat4("model", model);
+	columpio.Draw(shader);
 
 
 	glBindVertexArray(VAO);
@@ -293,15 +359,14 @@ void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba
 	glm::vec3 centroCaja(0.0f, 90.0f, 0.0f);
 	shaderSkybox.setVec3("lightColor", 1.0f, 1.0f, 1.0f); //Indica el color que genera la fuente de luz
 	shaderSkybox.setVec3("lightPos", centroCaja);	//Indica posición de la luz
-	shaderSkybox.setVec3("viewPos", camera.Position);
+	shaderSkybox.setVec3("viewPos", camera->Position);
 	shaderSkybox.setMat4("projection", projection);
 	shaderSkybox.setMat4("view", view);
 	shaderSkybox.setMat4("model", model);
 
 	model = glm::mat4(1.0f);
-	//model = glm::translate(model, camera.Position/2.0f);
 	model = glm::translate(model, centroCaja);
-	model = glm::scale(model, glm::vec3(400.0f));
+	model = glm::scale(model, glm::vec3(600.0f));
 	shaderSkybox.setMat4("model", model);	//SE PASAN VALORES DE ILUMINACIÓN
 	shaderSkybox.setVec3("diffuseColor", 1.0f, 1.0f, 1.0f);  //DIFUSA, indica el color que van a tomar las caras más iluminadas del objeto
 	glBindTexture(GL_TEXTURE_2D, t_dia);
@@ -338,17 +403,27 @@ int main()
 	Model carpa = ((char*)"Models/carpa/carpa.obj");
 	Model carpaInt = ((char*)"Models/carpaInterior/carpa.obj");
 	Model grada = ((char*)"Models/grada/grada.obj");
-	Model prueba = ((char*)"Models/prueba/grada.obj");
+	Model cerca = ((char*)"Models/cerca/cerca.obj");
+	Model taquilla = ((char*)"Models/taquilla/taquilla.obj");
+	Model oso = ((char*)"Models/oso/oso.obj");
+	Model pelota = ((char*)"Models/oso/pelota.obj");
+	Model canon = ((char*)"Models/canon/canon.obj");
+	Model trampolin = ((char*)"Models/trampolin/trampolin.obj");
+	Model elefante = ((char*)"Models/elefante/elefante.obj");
+	Model zancos = ((char*)"Models/zancos/zancos.obj");
+	Model plataforma = ((char*)"Models/plataforma/plataforma.obj");
+	Model payaso = ((char*)"Models/payaso/payaso.obj");
+	Model columpio = ((char*)"Models/columpio/columpio.obj");
+
+	Model prueba = ((char*)"Models/prueba/payaso.obj");
 	
 
 	//Inicialización de KeyFrames
 	for (int i = 0; i < MAX_FRAMES; i++)
 	{
-		KeyFrame[i].posX = 0.0f;
 		KeyFrame[i].posY = 0.0f;
 		KeyFrame[i].posZ = 0.0f;
-		KeyFrame[i].rotAvion = 0.0f;
-		KeyFrame[i].abrirPuerta = 0;
+		KeyFrame[i].rotX = 0.0f;
 	}
 	openFile();
 
@@ -369,7 +444,8 @@ int main()
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		display(modelShader, lampShader, skyboxShader, prueba, carpa, carpaInt, grada);
+		display(modelShader, lampShader, skyboxShader, prueba, carpa, carpaInt, grada, cerca, taquilla, oso, pelota,
+				canon, trampolin, elefante, zancos, plataforma, payaso, columpio);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
