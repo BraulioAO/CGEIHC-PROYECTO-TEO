@@ -1,7 +1,7 @@
 # 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
-# File Created: 17.11.2019 19:09:23
+# File Created: 18.11.2019 22:08:40
 
-newmtl Material__50
+newmtl pelota_pelota_pelota_pelota_Material__50
 	Ns 10.0000
 	Ni 1.5000
 	d 1.0000
@@ -12,4 +12,5 @@ newmtl Material__50
 	Kd 0.5880 0.5880 0.5880
 	Ks 0.0000 0.0000 0.0000
 	Ke 0.0000 0.0000 0.0000
+	map_Ka ball_diffuse.jpg
 	map_Kd ball_diffuse.jpg

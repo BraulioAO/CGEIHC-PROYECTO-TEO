@@ -1,5 +1,5 @@
 #version 330 core
-#define NUMBER  1
+#define NUMBER  2
 #define NUMBERAMB  2
 out vec4 FragColor;
 

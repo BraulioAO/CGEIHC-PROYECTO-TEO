@@ -90,12 +90,21 @@ void myData(){
 		 0.5f,  0.0f,  0.5f,	 0.0f,  1.0f,  0.0f,	2.0f,  0.0f,	//V5
 		 0.5f,  0.0f, -0.5f,	 0.0f,  1.0f,  0.0f,	2.0f,  2.0f,	//V6
 		-0.5f,  0.0f, -0.5f,	 0.0f,  1.0f,  0.0f,	00.0f,  2.0f,	//V7
+		
+		//LETREROENTRADA
+		-0.5f, -0.5f,  0.5f,	 0.0f,  0.0f,  1.0f,	0.0f,  0.0f,	//V0 - Frontal
+		 0.5f, -0.5f,  0.5f,	 0.0f,  0.0f,  1.0f,	1.0f,  0.0f,	//V1
+		 0.5f,  0.5f,  0.5f,	 0.0f,  0.0f,  1.0f,	1.0f,  1.0f,	//V5
+		-0.5f,  0.5f,  0.5f,	 0.0f,  0.0f,  1.0f,	0.0f,  1.0f,	//V4
 	};
 
 	unsigned int indices[] = {
 		//PISO
 		72, 73, 75, // first triangle
 		73, 74, 75,  // second triangle
+		//LETRERO_ENTRADA
+		76, 77, 79, // first triangle
+		77, 78, 79,  // second triangle
 	};
 
 	glGenVertexArrays(1, &VAO);

@@ -26,22 +26,78 @@
 
 
 
-glm::vec3 estadoLuces;
-float 	despPuerta = 0.0f;
-GLfloat contador = 0;
+glm::vec3 estadoLuces, estadoLucesEscenario;
+float 	rotOso = 0.0f,
+		rotPelota = 0.0f,
+		movGloboZ = 0.0f,
+		movGloboY = 0.0f,
+		rotSombrilla = 0.0f;
+
+bool fin1 = false, fin2 = false;
+
+
 
 void animate(void)
 {
+	if (rotOso < 360.0f)
+		rotOso+=1.0f;
+	else
+		rotOso = 0.0f;
+
+	if (rotPelota < 360.0f)
+		rotPelota+=4.0f;
+	else
+		rotPelota = 0.0f;
+
+	if (rotSombrilla < 360.0f)
+		rotSombrilla += 4.0f;
+	else
+		rotSombrilla = 0.0f;
+
+
+	if (fin1 == false) {
+		movGloboZ += 0.1f;
+		if(movGloboZ > 9.0f)
+			fin1 = true;
+	}
+	else{
+		movGloboZ -= 0.1f;
+		if (movGloboZ < 0.0f)
+			fin1 = false;
+	}
+
+	if (fin2 == false) {
+		movGloboY += 0.04f;
+		if (movGloboY > 4.0f)
+			fin2 = true;
+	}
+	else {
+		movGloboY -= 0.04f;
+		if (movGloboY < 0.0f)
+			fin2 = false;
+	}
+
+	printf("%f\n", movGloboZ);
+
+
 	if (cameraActual == 1)
 		camera = &camera1;
 	else if (cameraActual == 2)
 		camera = &camera2;
 
 
-	if (estadoLuz == 1)
+	if (estadoLuz == 1 && estadoLuzEscenario ==1)
+		estadoLuces = glm::vec3(0.8f);
+	else if (estadoLuz == 1 && estadoLuzEscenario == 0)
 		estadoLuces = glm::vec3(1.0f, 1.0f, 1.0f);
 	else
 		estadoLuces = glm::vec3(0.0f, 0.0f, 0.0f);
+
+	if (estadoLuzEscenario == 1)
+		estadoLucesEscenario = glm::vec3(0.40f);
+	else
+		estadoLucesEscenario = glm::vec3(0.0f);
+
 
 	if (play){
 		if (i_curr_steps >= i_max_steps){ //end of animation between frames?
@@ -92,17 +148,15 @@ void animate(void)
 
 void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba, Model carpa, Model carpaInt,
 			 Model grada, Model cerca, Model taquilla, Model oso, Model pelota, Model canon, Model trampolin,
-			 Model elefante, Model zancos, Model plataforma, Model payaso, Model payaso2, Model columpio)
+			 Model elefante, Model zancos, Model plataforma, Model payaso, Model payaso2, Model columpio,
+			 Model lampara, Model globos, Model iceCreamCar, Model sombrilla)
 {
 	//Lighting
 	//float posLuzX = movLuzX;
 	float posLuzX = 0.0f;
-	glm::vec3 lightPosition0(0.0f, 5.0f, 0.0f);
-	glm::vec3 lightPosition1(posLuzX, 8.0f,  0.0f);
-	glm::vec3 lightPosition2(posLuzX, 8.0f,  7.0f);
-	glm::vec3 lightPosition3(-posLuzX, 8.0f, -7.0f);
-	glm::vec3 lightPosition4(-posLuzX, 8.0f,  0.0f);
-	glm::vec3 lightPosition5(-posLuzX, 8.0f,  7.0f);
+	glm::vec3 lightPosition0(-25.0f, 30.0f, 0.0f);
+	glm::vec3 lightPosition1(25.0f, 30.0f,  0.0f);
+
 	glm::vec3 lightDirection1(1.0f, -1.0f, -1.0f);  //Dirección de la luz ambiental 1
 	glm::vec3 lightDirection2(-1.0f, -1.0f, 1.0f);  //Dirección de la luz ambiental 2
 
@@ -112,17 +166,17 @@ void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba
 
 	//Luz direccional, fuente infinita
 	shader.setVec3("dirLight[0].direction", lightDirection1);      // Se pasa la direccion de la fuente de luz direccional
-	shader.setVec3("dirLight[0].ambient", glm::vec3(0.1f));    //AMBIENTAL, indica hacia que color tienden las caras menos iluminadas por la fuente de luz
-	shader.setVec3("dirLight[0].diffuse", glm::vec3(0.5f));    //DIFUSA, indica el color que van a tomar las caras más iluminadas del objeto
+	shader.setVec3("dirLight[0].ambient", glm::vec3(0.06f));    //AMBIENTAL, indica hacia que color tienden las caras menos iluminadas por la fuente de luz
+	shader.setVec3("dirLight[0].diffuse", estadoLucesEscenario);    //DIFUSA, indica el color que van a tomar las caras más iluminadas del objeto
 	shader.setVec3("dirLight[0].specular", glm::vec3(1.0f, 1.0f, 1.0f));   //ESPECULAR, se trata de simular un brillo que va a tener la superficie
 	shader.setVec3("dirLight[1].direction", lightDirection2);      // Se pasa la direccion de la fuente de luz direccional
-	shader.setVec3("dirLight[1].ambient", glm::vec3(0.1f));    //AMBIENTAL, indica hacia que color tienden las caras menos iluminadas por la fuente de luz
-	shader.setVec3("dirLight[1].diffuse", glm::vec3(0.5f));    //DIFUSA, indica el color que van a tomar las caras más iluminadas del objeto
+	shader.setVec3("dirLight[1].ambient", glm::vec3(0.06f));    //AMBIENTAL, indica hacia que color tienden las caras menos iluminadas por la fuente de luz
+	shader.setVec3("dirLight[1].diffuse", estadoLucesEscenario);    //DIFUSA, indica el color que van a tomar las caras más iluminadas del objeto
 	shader.setVec3("dirLight[1].specular", glm::vec3(1.0f, 1.0f, 1.0f));   //ESPECULAR, se trata de simular un brillo que va a tener la superficie
 
 	//Luz posicional
 	float lin = 0.001f;
-	float quad = 0.003f;
+	float quad = 0.0003f;
 	shader.setVec3("pointLight[0].position", lightPosition0);  //Modifica la dirección de la luz posicional
 	shader.setVec3("pointLight[0].ambient", glm::vec3(0.0f, 0.0f, 0.0f));
 	shader.setVec3("pointLight[0].diffuse", estadoLuces);
@@ -130,7 +184,7 @@ void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba
 	shader.setFloat("pointLight[0].constant", 1.0f);    //Factor de atenuación, potencia de la fuente de luz muy grande
 	shader.setFloat("pointLight[0].linear", lin);     //Distancia máxima
 	shader.setFloat("pointLight[0].quadratic", quad);  //Distancia máxima
-	/*
+
 	shader.setVec3("pointLight[1].position", lightPosition1);  //Modifica la dirección de la luz posicional
 	shader.setVec3("pointLight[1].ambient", glm::vec3(0.0f, 0.0f, 0.0f));
 	shader.setVec3("pointLight[1].diffuse", estadoLuces);
@@ -138,39 +192,6 @@ void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba
 	shader.setFloat("pointLight[1].constant", 1.0f);    //Factor de atenuación, potencia de la fuente de luz muy grande
 	shader.setFloat("pointLight[1].linear", lin);     //Distancia máxima
 	shader.setFloat("pointLight[1].quadratic", quad);  //Distancia máxima
-
-	shader.setVec3("pointLight[2].position", lightPosition2);  //Modifica la dirección de la luz posicional
-	shader.setVec3("pointLight[2].ambient", glm::vec3(0.0f, 0.0f, 0.0f));
-	shader.setVec3("pointLight[2].diffuse", estadoLuces);
-	shader.setVec3("pointLight[2].specular", glm::vec3(1.0f, 1.0f, 1.0f));
-	shader.setFloat("pointLight[2].constant", 1.0f);    //Factor de atenuación, potencia de la fuente de luz muy grande
-	shader.setFloat("pointLight[2].linear", lin);        //Distancia máxima
-	shader.setFloat("pointLight[2].quadratic", quad);  //Distancia máxima
-
-	shader.setVec3("pointLight[3].position", lightPosition3);  //Modifica la dirección de la luz posicional
-	shader.setVec3("pointLight[3].ambient", glm::vec3(0.0f, 0.0f, 0.0f));
-	shader.setVec3("pointLight[3].diffuse", estadoLuces);
-	shader.setVec3("pointLight[3].specular", glm::vec3(1.0f, 1.0f, 1.0f));
-	shader.setFloat("pointLight[3].constant", 1.0f);    //Factor de atenuación, potencia de la fuente de luz muy grande
-	shader.setFloat("pointLight[3].linear", lin);        //Distancia máxima
-	shader.setFloat("pointLight[3].quadratic", quad);  //Distancia máxima
-
-	shader.setVec3("pointLight[4].position", lightPosition4);  //Modifica la dirección de la luz posicional
-	shader.setVec3("pointLight[4].ambient", glm::vec3(0.0f, 0.0f, 0.0f));
-	shader.setVec3("pointLight[4].diffuse", estadoLuces);
-	shader.setVec3("pointLight[4].specular", glm::vec3(1.0f, 1.0f, 1.0f));
-	shader.setFloat("pointLight[4].constant", 1.0f);    //Factor de atenuación, potencia de la fuente de luz muy grande
-	shader.setFloat("pointLight[4].linear", lin);        //Distancia máxima
-	shader.setFloat("pointLight[4].quadratic", quad);  //Distancia máxima
-
-	shader.setVec3("pointLight[5].position", lightPosition5);  //Modifica la dirección de la luz posicional
-	shader.setVec3("pointLight[5].ambient", glm::vec3(0.0f, 0.0f, 0.0f));
-	shader.setVec3("pointLight[5].diffuse", estadoLuces);
-	shader.setVec3("pointLight[5].specular", glm::vec3(1.0f, 1.0f, 1.0f));
-	shader.setFloat("pointLight[5].constant", 1.0f);    //Factor de atenuación, potencia de la fuente de luz muy grande
-	shader.setFloat("pointLight[5].linear", lin);        //Distancia máxima
-	shader.setFloat("pointLight[5].quadratic", quad);  //Distancia máxima
-	*/
 
 	shader.setFloat("material_shininess", 150.0f);
 
@@ -198,88 +219,53 @@ void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba
 	shader.setVec3("aColor", 1.0f, 1.0f, 1.0f);
 
 
-	//******************************************************************************************
-	// MODELOS PROPIOS, A PARTIR DE CUBOS Y PLANOS
-
-	/*----------------------------------------------------------*/
-	/* ---- Shader sin efectos de luz, crea fuentes de luz ---- */
-	/*----------------------------------------------------------*/
-	glBindVertexArray(VAO);
-	shaderLamp.use();	//
-	
-	//Se dibujan cubos amarillos para ubicar la posicion de las luces
-	//Se reemplaza con las lámparas.
-	//FUENTE DE LUZ POSICIONAL 0
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, lightPosition0);
-	shaderLamp.setMat4("projection", projection);
-	shaderLamp.setMat4("view", view);
-	shaderLamp.setMat4("model", model);
-	shaderLamp.setVec3("aColor", glm::vec3(1.0f, 1.0f, 0.0f));
-	glDrawArrays(GL_QUADS, 0, 24);
-	/*//FUENTE DE LUZ POSICIONAL 1
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, lightPosition1);
-	shaderLamp.setMat4("projection", projection);
-	shaderLamp.setMat4("view", view);
-	shaderLamp.setMat4("model", model);
-	shaderLamp.setVec3("aColor", glm::vec3(1.0f, 1.0f, 0.0f));
-	glDrawArrays(GL_QUADS, 0, 24);
-	//FUENTE DE LUZ POSICIONAL 2
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, lightPosition2);
-	shaderLamp.setMat4("projection", projection);
-	shaderLamp.setMat4("view", view);
-	shaderLamp.setMat4("model", model);
-	shaderLamp.setVec3("aColor", glm::vec3(1.0f, 1.0f, 0.0f));
-	glDrawArrays(GL_QUADS, 0, 24);
-	//FUENTE DE LUZ POSICIONAL 3
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, lightPosition3);
-	shaderLamp.setMat4("projection", projection);
-	shaderLamp.setMat4("view", view);
-	shaderLamp.setMat4("model", model);
-	shaderLamp.setVec3("aColor", glm::vec3(1.0f, 1.0f, 0.0f));
-	glDrawArrays(GL_QUADS, 0, 24);
-	//FUENTE DE LUZ POSICIONAL 4
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, lightPosition4);
-	shaderLamp.setMat4("projection", projection);
-	shaderLamp.setMat4("view", view);
-	shaderLamp.setMat4("model", model);
-	shaderLamp.setVec3("aColor", glm::vec3(1.0f, 1.0f, 0.0f));
-	glDrawArrays(GL_QUADS, 0, 24);
-	//FUENTE DE LUZ POSICIONAL 5
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, lightPosition5);
-	shaderLamp.setMat4("projection", projection);
-	shaderLamp.setMat4("view", view);
-	shaderLamp.setMat4("model", model);
-	shaderLamp.setVec3("aColor", glm::vec3(1.0f, 1.0f, 0.0f));
-	glDrawArrays(GL_QUADS, 0, 24);*/
-	
 
 
 	/*----------------------------------------------------------*/
 	/* -------- Shader con efectos de luz y texturizado ------- */
 	/*----------------------------------------------------------*/
+	//MODELADO GEOMETRICO CON PRIMITIVAS
+	glBindVertexArray(VAO);
 	shader.use();  //Shader con los efectos de luz y texturizado
 	//PISO
 	centro = glm::mat4(1.0f);
-	//origenHab = glm::translate(origenHab, glm::vec3(posX, 0.0f, 0.0f));
 	model = glm::translate(centro, glm::vec3(0.0f, -0.4f, 0.0f));
 	model = glm::scale(model, glm::vec3(610.0f, 1.0f, 610.0f));
 	shader.setMat4("model", model);
 	glBindTexture(GL_TEXTURE_2D, t_pasto);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, BUFFER_OFFSET(0));
+	//LETRERO 1 DERECHA
+	model = glm::translate(centro, glm::vec3(19.0f, 6.0f, 29.0f));
+	model = glm::scale(model, glm::vec3(12.0f, 7.0f, 1.0f));
+	shader.setMat4("model", model);
+	glBindTexture(GL_TEXTURE_2D, t_walpurgis1);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, BUFFER_OFFSET(6));
+	//LETRERO 2 IZQUIERDA
+	model = glm::translate(centro, glm::vec3(-15.0f, 6.0f, 29.0f));
+	model = glm::scale(model, glm::vec3(12.0f, 7.0f, 1.0f));
+	shader.setMat4("model", model);
+	glBindTexture(GL_TEXTURE_2D, t_walpurgis2);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, BUFFER_OFFSET(6));
 
 	glBindVertexArray(0);
-	shader.use();  //Shader con los efectos de luz y texturizado
+
+
+
 	//******************************************************************************************
 	//MODELOS CARGADOS
-	//CARPA
 	origenCarpa = glm::mat4(1.0);
+
+	//FUENTES DE LUZ
+	model = glm::translate(origenCarpa, glm::vec3(-24.0f, 33.0f, 0.0f));
+	shader.setMat4("model", model);
+	lampara.Draw(shader);
+	model = glm::translate(origenCarpa, glm::vec3(24.0f, 33.0f, 0.0f));
+	shader.setMat4("model", model);
+	lampara.Draw(shader);
+
+
+	//CARPA
+
 	model = glm::translate(origenCarpa, glm::vec3(0.0f, -0.12f, 0.0f));
 	model = glm::scale(model, glm::vec3(25.0, 28.0f, 25.0f));
 	shader.setMat4("model", model);
@@ -309,15 +295,9 @@ void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba
 	model = glm::translate(origenCarpa, glm::vec3(40.0f, 0.0f, 85.0f));
 	shader.setMat4("model", model);
 	taquilla.Draw(shader);
-	//OSO SOBRE PELOTA
-	model = glm::translate(origenCarpa, glm::vec3(0.0f, 0.0f, -10.0f));
-	shader.setMat4("model", model);
-	oso.Draw(shader);
-	model = glm::translate(origenCarpa, glm::vec3(0.0f, 0.0f, -10.0f));
-	shader.setMat4("model", model);
-	pelota.Draw(shader);
 	//ELEFANTE
 	model = glm::translate(origenCarpa, glm::vec3(-40.0f, 0.0f, 55.0f));
+	model = glm::scale(model, glm::vec3(0.7f));
 	shader.setMat4("model", model);
 	elefante.Draw(shader);
 	//ZANCOS RECARGADOS
@@ -330,6 +310,40 @@ void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba
 	model = glm::translate(model, glm::vec3(8.0f, 0.0f, 0.0f));
 	shader.setMat4("model", model);
 	zancos.Draw(shader);
+
+	//CARRO HELADOS
+	temp = model = glm::translate(origenCarpa, glm::vec3(40.0f, 0.0f, 65.0f));
+	model = glm::scale(model, glm::vec3(0.75f));
+	shader.setMat4("model", model);
+	iceCreamCar.Draw(shader);
+	model = glm::rotate(temp, glm::radians(rotSombrilla), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(0.0f, -7.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(1.1f));
+	shader.setMat4("model", model);
+	sombrilla.Draw(shader);
+
+
+	//GLOBOS
+	model = glm::translate(origenCarpa, glm::vec3(16.0f, movGloboY, -19.0f+movGloboZ));
+	shader.setMat4("model", model);
+	globos.Draw(shader);
+	model = glm::translate(origenCarpa, glm::vec3(-16.0f, movGloboY, 25.0f-movGloboZ));
+	shader.setMat4("model", model);
+	globos.Draw(shader);
+
+
+	//OSO SOBRE PELOTA
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 3.0f));
+	model = glm::rotate(origenCarpa, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::rotate(model, glm::radians(-rotOso), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(15.0f, 0.0f, 0.0f));
+	shader.setMat4("model", model);
+	oso.Draw(shader);
+	model = glm::translate(model, glm::vec3(0.0f, 1.08f, 0.0f));
+	model = glm::rotate(model, glm::radians(rotPelota), glm::vec3(1.0f, 0.0f, 0.0f));
+	shader.setMat4("model", model);
+	pelota.Draw(shader);
+
 
 	//CAÑON
 	model = glm::translate(origenCarpa, glm::vec3(-14.0f, 0.0f, -16.0f));
@@ -347,8 +361,6 @@ void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba
 	model = glm::rotate(model, glm::radians(35.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 	model = glm::translate(model, glm::vec3(0.0f, posY, posZ));
 	model = glm::rotate(model, glm::radians(rotX), glm::vec3(1.0f, 0.0f, 0.0f));
-	//model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	//model = glm::scale(model, glm::vec3(0.8f, 0.9f, 0.5f));
 	shader.setMat4("model", model);
 	payaso.Draw(shader);
 
@@ -394,7 +406,7 @@ void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba
 	model = glm::translate(model, centroCaja);
 	model = glm::scale(model, glm::vec3(600.0f));
 	shaderSkybox.setMat4("model", model);	//SE PASAN VALORES DE ILUMINACIÓN
-	shaderSkybox.setVec3("diffuseColor", 1.0f, 1.0f, 1.0f);  //DIFUSA, indica el color que van a tomar las caras más iluminadas del objeto
+	shaderSkybox.setVec3("diffuseColor", estadoLucesEscenario+estadoLucesEscenario+0.2f);  //DIFUSA, indica el color que van a tomar las caras más iluminadas del objeto
 	glBindTexture(GL_TEXTURE_2D, t_dia);
 	glDrawArrays(GL_QUADS, 48, 24);
 	glBindVertexArray(0);
@@ -413,7 +425,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
 #endif
 
-	GLFWwindow* window = initWindow("Proyecto Final");
+	GLFWwindow* window = initWindow("Proyecto Final - Circo");
 
 	//Mis funciones
 	//Datos a utilizar
@@ -441,6 +453,10 @@ int main()
 	Model payaso = ((char*)"Models/payaso/payaso.obj");
 	Model payaso2 = ((char*)"Models/payaso/payaso2.obj");
 	Model columpio = ((char*)"Models/columpio/columpio.obj");
+	Model lampara = ((char*)"Models/lampara/lampara.obj");
+	Model globos = ((char*)"Models/globos/globos.obj");
+	Model iceCreamCar = ((char*)"Models/iceCreamCar/iceCreamCar.obj");
+	Model sombrilla = ((char*)"Models/iceCreamCar/sombrilla.obj");
 
 	Model prueba = ((char*)"Models/prueba/payaso.obj");
 	
@@ -466,8 +482,9 @@ int main()
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		display(modelShader, lampShader, skyboxShader, prueba, carpa, carpaInt, grada, cerca, taquilla, oso, pelota,
-				canon, trampolin, elefante, zancos, plataforma, payaso, payaso2, columpio);
+		display(modelShader, lampShader, skyboxShader, prueba, carpa, carpaInt, grada, cerca, taquilla, oso, 
+				pelota, canon, trampolin, elefante, zancos, plataforma, payaso, payaso2, columpio, lampara,
+				globos, iceCreamCar, sombrilla);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------

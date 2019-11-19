@@ -17,7 +17,8 @@ double	deltaTime = 0.0f,
 
 //For Keyboard
 int	estadoLuz = 1,
-cameraActual = 1;
+	estadoLuzEscenario = 1,
+	cameraActual = 1;
 
 float	rotArr = 0.0f;
 
@@ -91,6 +92,10 @@ void my_input(GLFWwindow *window, int key, int scancode, int action, int mode)
 		estadoLuz = 1;
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
 		estadoLuz = 0;
+	if (glfwGetKey(window, GLFW_KEY_9) == GLFW_PRESS)
+		estadoLuzEscenario = 1;
+	if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
+		estadoLuzEscenario = 0;
 
 
 	//Cambio de camara
