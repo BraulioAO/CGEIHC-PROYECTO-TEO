@@ -43,41 +43,56 @@ void animate(void)
 	else
 		estadoLuces = glm::vec3(0.0f, 0.0f, 0.0f);
 
-	if (play)
-	{
-		if (i_curr_steps >= i_max_steps) //end of animation between frames?
-		{
+	if (play){
+		if (i_curr_steps >= i_max_steps){ //end of animation between frames?
 			playIndex++;
-			if (playIndex > FrameIndex - 2)	//end of total animation?
-			{
-				printf("termina anim\n");
+			if (playIndex > FrameIndex - 2){	//end of total animation?
+				printf("termina anim 1\n");
 				playIndex = 0;
 				play = false;
 			}
-			else //Next frame interpolations
-			{
-				i_curr_steps = 0; //Reset counter
-								  //Interpolation
-				interpolation();
+			else{ //Next frame interpolations
+				i_curr_steps = 0; //Reset counter	  
+				interpolation();//Interpolation
 			}
 		}
-		else
-		{
+		else{
 			//Draw animation
 			posY += incY;
 			posZ += incZ;
 			rotX += incRotX;
-
 			i_curr_steps++;
 		}
-
 	}
-	
+
+	if (play2) {
+		if (i_curr_steps2 >= i_max_steps2) { //end of animation between frames?
+			playIndex2++;
+			if (playIndex2 > FrameIndex2 - 2) {	//end of total animation?
+				printf("termina anim 2\n");
+				playIndex2 = 0;
+				play2 = false;
+			}
+			else { //Next frame interpolations
+				i_curr_steps2 = 0; //Reset counter	  
+				interpolation2();//Interpolation
+			}
+		}
+		else {
+			//Draw animation
+			posY2 += incY2;
+			posZ2 += incZ2;
+			rotX2 += incRotX2;
+			rotPay += incRotPay;
+			rotCol += incRotCol;
+			i_curr_steps2++;
+		}
+	}
 }
 
 void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba, Model carpa, Model carpaInt,
 			 Model grada, Model cerca, Model taquilla, Model oso, Model pelota, Model canon, Model trampolin,
-			 Model elefante, Model zancos, Model plataforma, Model payaso, Model columpio)
+			 Model elefante, Model zancos, Model plataforma, Model payaso, Model payaso2, Model columpio)
 {
 	//Lighting
 	//float posLuzX = movLuzX;
@@ -301,16 +316,6 @@ void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba
 	model = glm::translate(origenCarpa, glm::vec3(0.0f, 0.0f, -10.0f));
 	shader.setMat4("model", model);
 	pelota.Draw(shader);
-	//CAÑON
-	model = glm::translate(origenCarpa, glm::vec3(-14.0f, 0.0f, -16.0f));
-	shader.setMat4("model", model);
-	canon.Draw(shader);
-	//TRAMPOLIN
-	model = glm::translate(origenCarpa, glm::vec3(19.0f, 0.0f, 20.0f));
-	model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	model = glm::scale(model, glm::vec3(1.5f, 1.0f, 1.2f));
-	shader.setMat4("model", model);
-	trampolin.Draw(shader);
 	//ELEFANTE
 	model = glm::translate(origenCarpa, glm::vec3(-40.0f, 0.0f, 55.0f));
 	shader.setMat4("model", model);
@@ -325,17 +330,17 @@ void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba
 	model = glm::translate(model, glm::vec3(8.0f, 0.0f, 0.0f));
 	shader.setMat4("model", model);
 	zancos.Draw(shader);
-	//PLATAFORMA
-	model = glm::translate(origenCarpa, glm::vec3(19.2f, 0.0f, 2.5f));
-	model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	model = glm::scale(model, glm::vec3(0.8f, 0.9f, 0.5f));
+
+	//CAÑON
+	model = glm::translate(origenCarpa, glm::vec3(-14.0f, 0.0f, -16.0f));
 	shader.setMat4("model", model);
-	plataforma.Draw(shader);
-	model = glm::translate(origenCarpa, glm::vec3(-17.0f, 0.0f, 3.0f));
-	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	model = glm::scale(model, glm::vec3(0.8f, 0.9f, 0.5f));
+	canon.Draw(shader);
+	//TRAMPOLIN
+	model = glm::translate(origenCarpa, glm::vec3(19.0f, 0.0f, 20.0f));
+	model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(1.5f, 1.0f, 1.2f));
 	shader.setMat4("model", model);
-	plataforma.Draw(shader);
+	trampolin.Draw(shader);
 	//PAYASO
 	model = glm::translate(origenCarpa, glm::vec3(-14.5f, 2.0f, -16.5f));
 	model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -346,12 +351,33 @@ void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba
 	//model = glm::scale(model, glm::vec3(0.8f, 0.9f, 0.5f));
 	shader.setMat4("model", model);
 	payaso.Draw(shader);
+
+	//PLATAFORMA
+	model = glm::translate(origenCarpa, glm::vec3(19.5f, -0.1f, 2.5f));
+	model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.8f, 0.9f, 0.08));
+	shader.setMat4("model", model);
+	plataforma.Draw(shader);
+	model = glm::translate(origenCarpa, glm::vec3(-18.1f, -0.1f, 3.0f));
+	model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::scale(model, glm::vec3(0.8f, 0.85f, 0.08f));
+	shader.setMat4("model", model);
+	plataforma.Draw(shader);
 	//COLUMPIO
-	model = glm::translate(origenCarpa, glm::vec3(0.0f, 50.0f, 0.0f));
-	model = glm::rotate(model, glm::radians(180.0f+rotCol), glm::vec3(0.0f, 0.0f, 1.0f));
-	model = glm::scale(model, glm::vec3(1.0f, 1.8f, 1.0f));
+	model = glm::translate(origenCarpa, glm::vec3(0.0f, 40.0f, 3.0f));
+	model = glm::rotate(model, glm::radians(120.0f+rotCol), glm::vec3(0.0f, 0.0f, 1.0f));
+	model = glm::scale(model, glm::vec3(1.0f, 2.5f, 1.0f));
 	shader.setMat4("model", model);
 	columpio.Draw(shader);
+	//PAYASO2
+	model = glm::translate(origenCarpa, glm::vec3(19.2f, 21.0f, 3.0f));
+	model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	model = glm::translate(model, glm::vec3(0.0f, -posZ2, -posY2));
+	model = glm::rotate(model, glm::radians(rotX2), glm::vec3(1.0f, 0.0f, 0.0f));
+	model = glm::rotate(model, glm::radians(rotPay), glm::vec3(0.0f, 1.0f, 0.0f));
+	shader.setMat4("model", model);
+	payaso2.Draw(shader);
+
 
 
 	glBindVertexArray(VAO);
@@ -413,19 +439,15 @@ int main()
 	Model zancos = ((char*)"Models/zancos/zancos.obj");
 	Model plataforma = ((char*)"Models/plataforma/plataforma.obj");
 	Model payaso = ((char*)"Models/payaso/payaso.obj");
+	Model payaso2 = ((char*)"Models/payaso/payaso2.obj");
 	Model columpio = ((char*)"Models/columpio/columpio.obj");
 
 	Model prueba = ((char*)"Models/prueba/payaso.obj");
 	
 
 	//Inicialización de KeyFrames
-	for (int i = 0; i < MAX_FRAMES; i++)
-	{
-		KeyFrame[i].posY = 0.0f;
-		KeyFrame[i].posZ = 0.0f;
-		KeyFrame[i].rotX = 0.0f;
-	}
 	openFile();
+	openFile2();
 
 	double currentFrame;
 	// render loop
@@ -445,7 +467,7 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		display(modelShader, lampShader, skyboxShader, prueba, carpa, carpaInt, grada, cerca, taquilla, oso, pelota,
-				canon, trampolin, elefante, zancos, plataforma, payaso, columpio);
+				canon, trampolin, elefante, zancos, plataforma, payaso, payaso2, columpio);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------

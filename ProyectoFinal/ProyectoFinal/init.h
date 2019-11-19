@@ -93,43 +93,45 @@ void my_input(GLFWwindow *window, int key, int scancode, int action, int mode)
 		estadoLuz = 0;
 
 
-	//Secuencia de arranque
+	//Cambio de camara
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
 		cameraActual = 1;
 	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
 		cameraActual = 2;
 
 	if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS)
-		posZ = posZ - 0.5f;
+		posZ2 -= 0.5f;
 	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
-		posZ = posZ + 0.5f;
+		posZ2 += 0.5f;
 	if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
-		posY = posY - 0.5f;
+		posY2 -= 0.5f;
 	if (glfwGetKey(window, GLFW_KEY_J) == GLFW_PRESS)
-		posY = posY + 0.5f;
+		posY2 += 0.5f;
 	if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
-		rotX++;
+		rotX2+=2.0f;
 	if (glfwGetKey(window, GLFW_KEY_N) == GLFW_PRESS)
-		rotX--;
+		rotX2-=2.0f;
 
 	if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS)
-		rotCol++;
+		rotPay+= 3.0f;
 	if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS)
-		rotCol--;
+		rotPay-=3.0f;
+	if (glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS)
+		rotCol+= 3.0f;
+	if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS)
+		rotCol-= 3.0f;
 
 	//To save data keyFrame
-	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
+	/*if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
 		saveFile();
 	if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
 		openFile();
-	//if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-	//	mostrarDatos();
-
-	//To play KeyFrame animation 
-	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-	{
-		if (play == false && (FrameIndex > 1))
-		{
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+		mostrarDatos();
+		*/
+	//To play KeyFrame animation terrestre
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS){
+		if (play == false && (FrameIndex > 1)){
 			resetElements();
 			//First Interpolation				
 			interpolation();
@@ -139,17 +141,30 @@ void my_input(GLFWwindow *window, int key, int scancode, int action, int mode)
 			i_curr_steps = 0;
 		}
 		else
-		{
 			play = false;
+	}
+
+	//To play KeyFrame animation aereo
+	if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
+		if (play2 == false && (FrameIndex2 > 1)) {
+			resetElements2();
+			//First Interpolation				
+			interpolation2();
+
+			play2 = true;
+			playIndex2 = 0;
+			i_curr_steps2 = 0;
 		}
+		else
+			play2 = false;
 	}
 
 	//To Save a KeyFrame
 	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS)
 	{
-		if (FrameIndex < MAX_FRAMES)
+		if (FrameIndex2 < MAX_FRAMES2)
 		{
-			saveFrame();
+			saveFrame2();
 		}
 	}
 }
