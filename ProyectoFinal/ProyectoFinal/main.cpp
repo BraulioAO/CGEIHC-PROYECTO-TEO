@@ -10,6 +10,7 @@
 #define _CRT_SECURE_NO_DEPRECATE
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
+#include <Windows.h>
 
 #include "camera.h"
 #include "Model.h"
@@ -22,9 +23,15 @@
 #include "texturas.h"
 #include "datosModelosPropios.h"
 #include "keyFrame.h"
+#include "musica.h"
 #include "init.h"
 
-
+#include <time.h>
+void wait(unsigned timeout)
+{
+	timeout += clock();
+	while (clock() < timeout) continue;
+}
 
 glm::vec3 estadoLuces, estadoLucesEscenario;
 float 	rotOso = 0.0f,
@@ -35,6 +42,15 @@ float 	rotOso = 0.0f,
 
 bool fin1 = false, fin2 = false;
 
+
+float contZ = 0.0f;
+float contY = 0.0f;
+float contX = 0.0f;
+float contX1 = 0.0f;
+float contZ1 = 0.0f;
+float contZ2 = 0.0f;
+double der = 0, der1 = 0, der2 = 0;
+double izq = 0, izq1 = 0;
 
 
 void animate(void)
@@ -77,13 +93,11 @@ void animate(void)
 			fin2 = false;
 	}
 
-	printf("%f\n", movGloboZ);
-
-
-	if (cameraActual == 1)
-		camera = &camera1;
-	else if (cameraActual == 2)
-		camera = &camera2;
+	if(!modoLibre)
+		if (cameraActual == 1)
+			camera = &camera1;
+		else if (cameraActual == 2)
+			camera = &camera2;
 
 
 	if (estadoLuz == 1 && estadoLuzEscenario ==1)
@@ -106,10 +120,13 @@ void animate(void)
 				printf("termina anim 1\n");
 				playIndex = 0;
 				play = false;
+				sonidoActo1 = false;
 			}
 			else{ //Next frame interpolations
 				i_curr_steps = 0; //Reset counter	  
 				interpolation();//Interpolation
+				if (playIndex > 1)
+					sonidoActo1 = false;
 			}
 		}
 		else{
@@ -128,8 +145,11 @@ void animate(void)
 				printf("termina anim 2\n");
 				playIndex2 = 0;
 				play2 = false;
+				sonidoActo2 = false;
 			}
 			else { //Next frame interpolations
+				if (playIndex2 > 4)
+					sonidoActo2 = false;
 				i_curr_steps2 = 0; //Reset counter	  
 				interpolation2();//Interpolation
 			}
@@ -144,9 +164,126 @@ void animate(void)
 			i_curr_steps2++;
 		}
 	}
+
+	
+	if (modoLibre) {
+		lastX = SCR_WIDTH / 2.0f;
+		lastY = SCR_HEIGHT / 2.0f;
+		camera = &camera4; 
+		if (contZ < 36.0f) { //36
+			camera->ProcessKeyboard(FORWARD, (float)deltaTime);
+			mouseModoLibre(mouseX, mouseY);
+			contZ+= 0.5;
+		}
+		else if (contZ < 50.0f) {
+			contZ += 0.5;
+		}
+		else if (contZ < 51.0f) {
+			contZ ++;
+			resetElements2();			
+			interpolation2();
+			play2 = true;
+			playIndex2 = 0;
+			i_curr_steps2 = 0;
+			resetElements();			
+			interpolation();
+			play = true;
+			playIndex = 0;
+			i_curr_steps = 0;
+		}
+		else if (contZ < 54.0f) {
+			contZ += 0.5;
+		}
+		else {
+			if (contX < 2.0f) {
+				camera->ProcessKeyboard(LEFT, (float)deltaTime);
+				mouseModoLibre(mouseX, mouseY);
+				contX += 0.5;
+			}
+			else if (contX < 9.0f) {
+				contX += 0.5;
+			}
+			else {
+				if (der < 14) {
+					mouseModoLibre(mouseX + der, mouseY);
+					der += 0.5;
+				}
+				else if (der < 60) {
+					der += 0.5;
+				}
+				else if (izq < 14) {
+					mouseModoLibre(mouseX - izq, mouseY);
+					izq += 0.5;
+				}
+				else if (izq < 28) {
+					izq += 0.5;
+				}
+				else {
+
+					if (contX1 < 2.5f) {
+						camera->ProcessKeyboard(RIGHT, (float)deltaTime);
+						mouseModoLibre(mouseX, mouseY);
+						contX1 += 0.5;
+					}
+					else {
+						if (contZ1 < 12.0f) {
+							camera->ProcessKeyboard(BACKWARD, (float)deltaTime);
+							mouseModoLibre(mouseX, mouseY);
+							contZ1 += 0.5;
+						}
+						else {
+							if (der1 < 13) {
+								mouseModoLibre(mouseX + der1, mouseY);
+								der1 += 0.5;
+							}
+							else if (der1 < 30) {
+								der1 += 0.5;
+							}
+							else if (izq1 < 13) {
+								mouseModoLibre(mouseX - izq1, mouseY);
+								izq1 += 0.5;
+							}
+							else if (izq1 < 30) {
+								izq1 += 0.5;
+							}
+							else {
+								if (contZ1 < 40.0f) {
+									camera->ProcessKeyboard(BACKWARD, (float)deltaTime);
+									mouseModoLibre(mouseX, mouseY);
+									contZ1 += 0.5;
+								}
+								else if (contZ1 < 60.0f) {
+									contZ1 += 0.5;
+								}
+								else {
+									modoLibre = false;
+									contZ = 0.0f;
+									contX = 0.0f;
+									contZ1 = 0.0f;
+									contX1 = 0.0f;
+									der = 0;
+									der1 = 0;
+									der2 = 0;
+									izq = 0;
+									izq1 = 0;
+									play = false;
+									play2 = false;
+								}
+								
+							}
+						}
+					}
+				}
+			}
+		}
+		//printf("contZ: %f\n", contZ);
+		
+		
+	}
+	//printf("lastX: %f, lastY: %f\n", lastX, lastY);
 }
 
-void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba, Model carpa, Model carpaInt,
+void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model carpa, Model carpaInt,
 			 Model grada, Model cerca, Model taquilla, Model oso, Model pelota, Model canon, Model trampolin,
 			 Model elefante, Model zancos, Model plataforma, Model payaso, Model payaso2, Model columpio,
 			 Model lampara, Model globos, Model iceCreamCar, Model sombrilla)
@@ -275,6 +412,9 @@ void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba
 	model = glm::scale(model, glm::vec3(24.97, 27.97f, 24.97f));
 	shader.setMat4("model", model);
 	carpaInt.Draw(shader);
+
+	musicaFondoCarpa(camera->Position, musicaCarpa);
+
 	//GRADA IZQUIERDA
 	model = glm::rotate(origenCarpa, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	model = glm::translate(model, glm::vec3(-3.0f, 0.0f, -20.0f));
@@ -311,6 +451,7 @@ void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba
 	shader.setMat4("model", model);
 	zancos.Draw(shader);
 
+	//ANIMACION ADICIONAL 1
 	//CARRO HELADOS
 	temp = model = glm::translate(origenCarpa, glm::vec3(40.0f, 0.0f, 65.0f));
 	model = glm::scale(model, glm::vec3(0.75f));
@@ -322,7 +463,7 @@ void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba
 	shader.setMat4("model", model);
 	sombrilla.Draw(shader);
 
-
+	//ANIMACION ADICIONAL 2
 	//GLOBOS
 	model = glm::translate(origenCarpa, glm::vec3(16.0f, movGloboY, -19.0f+movGloboZ));
 	shader.setMat4("model", model);
@@ -331,7 +472,7 @@ void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba
 	shader.setMat4("model", model);
 	globos.Draw(shader);
 
-
+	//ANIMACION ADICIONAL 3
 	//OSO SOBRE PELOTA
 	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 3.0f));
 	model = glm::rotate(origenCarpa, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -344,7 +485,7 @@ void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba
 	shader.setMat4("model", model);
 	pelota.Draw(shader);
 
-
+	//ANIMACION 1 (TERRESTRE)
 	//CAÑON
 	model = glm::translate(origenCarpa, glm::vec3(-14.0f, 0.0f, -16.0f));
 	shader.setMat4("model", model);
@@ -364,6 +505,9 @@ void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba
 	shader.setMat4("model", model);
 	payaso.Draw(shader);
 
+	efectoActo1(sonidoActo1, camera->Position, musicaActo1);
+
+	//ANIMACION 2 (AEREA)
 	//PLATAFORMA
 	model = glm::translate(origenCarpa, glm::vec3(19.5f, -0.1f, 2.5f));
 	model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
@@ -390,7 +534,7 @@ void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba
 	shader.setMat4("model", model);
 	payaso2.Draw(shader);
 
-
+	efectoActo2(sonidoActo2, camera->Position, musicaActo2);
 
 	glBindVertexArray(VAO);
 	shaderSkybox.use();
@@ -414,15 +558,15 @@ void display(Shader shader, Shader shaderLamp, Shader shaderSkybox, Model prueba
 
 int main()
 {
-    // glfw: initialize and configure
-    // ------------------------------
-    glfwInit();
-    /*glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);*/
+	// glfw: initialize and configure
+	// ------------------------------
+	glfwInit();
+	/*glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);*/
 
 #ifdef __APPLE__
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
 #endif
 
 	GLFWwindow* window = initWindow("Proyecto Final - Circo");
@@ -433,11 +577,32 @@ int main()
 	myData();
 	glEnable(GL_DEPTH_TEST);
 
+	//%%%%%%%%%%% sonido %%%%%%%%%%%%%%%%%%%%%
+	vec3df position_musicaCarpa(0, 0, 0);
+	vec3df position_musicaActo1(0, 0, 0);
+	vec3df position_musicaActo2(0, 0, 0);
+
+	musicaCarpa = musica_Carpa->play3D("music/musicaCarpa.ogg", position_musicaCarpa, true, true);
+	musicaCarpa->setMinDistance(60);
+	musicaCarpa->setVolume(1);
+
+	musicaActo1 = musica_Acto1->play3D("music/musicaActo1.mp3", position_musicaActo1, true, true);
+	musicaActo1->setMinDistance(60);
+	musicaActo1->setVolume(1);
+
+	musicaActo2 = musica_Acto2->play3D("music/musicaActo2.mp3", position_musicaActo2, true, true);
+	musicaActo2->setMinDistance(60);
+	musicaActo2->setVolume(1);
 	
+	musica_General->play2D("music/musicaGeneral.ogg", true);
+	musica_General->setSoundVolume(0.3f);
+
+	//%%%%%%%%%%%%%%%%%%%%%%%% Shaders %%%%%%%%%%%%%%%%%%%%%
 	Shader modelShader("Shaders/shader_Lights.vs", "Shaders/shader_Lights.fs");
 	Shader lampShader("shaders/shader_lamp.vs", "shaders/shader_lamp.fs");
 	Shader skyboxShader("shaders/shader_skybox.vs", "shaders/shader_skybox.fs");
-	// Load models
+	
+	//%%%%%%%%%%%%%%%%%%%%%%%% Load Models %%%%%%%%%%%%%%%%%%%%%
 	Model carpa = ((char*)"Models/carpa/carpa.obj");
 	Model carpaInt = ((char*)"Models/carpaInterior/carpa.obj");
 	Model grada = ((char*)"Models/grada/grada.obj");
@@ -457,8 +622,6 @@ int main()
 	Model globos = ((char*)"Models/globos/globos.obj");
 	Model iceCreamCar = ((char*)"Models/iceCreamCar/iceCreamCar.obj");
 	Model sombrilla = ((char*)"Models/iceCreamCar/sombrilla.obj");
-
-	Model prueba = ((char*)"Models/prueba/payaso.obj");
 	
 
 	//Inicialización de KeyFrames
@@ -482,14 +645,17 @@ int main()
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		display(modelShader, lampShader, skyboxShader, prueba, carpa, carpaInt, grada, cerca, taquilla, oso, 
+		display(modelShader, lampShader, skyboxShader, carpa, carpaInt, grada, cerca, taquilla, oso, 
 				pelota, canon, trampolin, elefante, zancos, plataforma, payaso, payaso2, columpio, lampara,
 				globos, iceCreamCar, sombrilla);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+		
+			glfwSwapBuffers(window);
+		if (!modoLibre) {
+			glfwPollEvents();
+		}
     }
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
@@ -498,6 +664,15 @@ int main()
 	glDeleteBuffers(1, &VBO);
 
     glfwTerminate();
+
+	musica_General->drop();
+	musica_Carpa->drop();
+	musica_Acto1->drop();
+	musica_Acto2->drop();
+
+	musicaCarpa->drop();
+	musicaActo1->drop();
+	musicaActo2->drop();
     return 0;
 }
 

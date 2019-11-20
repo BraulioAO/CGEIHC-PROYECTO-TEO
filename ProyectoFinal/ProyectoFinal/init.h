@@ -5,11 +5,16 @@ void mouse_callback(GLFWwindow *window, double xpos, double ypos);
 void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 
 //Camera
-Camera camera1(glm::vec3(-30.0f, 105.0f, 350.0f));  //Posición inicial de la cámara
-Camera camera2(glm::vec3(0.0f, 30.0f, 35.0f));  //Posición inicial de la cámara
+Camera camera1(glm::vec3(-190.0f, 170.0f, 360.0f));  //Posición inicial de la cámara
+Camera camera2(glm::vec3(-50.0f, 72.0f, 17.0f));  //Posición inicial de la cámara
+
+Camera camera3(glm::vec3(-50.0f, 72.0f, 17.0f));  //Posición inicial de la cámara modo libre 1
+Camera camera4(glm::vec3(2.0f, 18.0f, 360.0f));  //Posición inicial de la cámara modo libre 2
+
 Camera *camera;
 
 bool firstMouse = false;
+bool modoLibre = false;
 
 //Timing
 double	deltaTime = 0.0f,
@@ -31,7 +36,9 @@ int SCR_WIDTH = 3800;
 int SCR_HEIGHT = 7600;
 
 double	lastX = 0.0f,
-		lastY = 0.0f;
+		lastY = 0.0f,
+		mouseX = 0.0f,
+		mouseY = 0.0f;
 
 void getResolution()
 {
@@ -42,6 +49,8 @@ void getResolution()
 
 	lastX = SCR_WIDTH / 2.0f;
 	lastY = SCR_HEIGHT / 2.0f;
+	mouseX = SCR_WIDTH / 2.0f;
+	mouseY = SCR_HEIGHT / 2.0f;
 }
 
 GLFWwindow* initWindow(const char *nombreVentana = "Ventana") {
@@ -75,8 +84,13 @@ GLFWwindow* initWindow(const char *nombreVentana = "Ventana") {
 // ---------------------------------------------------------------------------------------------------------
 void my_input(GLFWwindow *window, int key, int scancode, int action, int mode)
 {
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+		modoLibre = true;
+	}
+
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
+
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		camera->ProcessKeyboard(FORWARD, (float)deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -97,13 +111,20 @@ void my_input(GLFWwindow *window, int key, int scancode, int action, int mode)
 	if (glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS)
 		estadoLuzEscenario = 0;
 
-
 	//Cambio de camara
 	if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
 		cameraActual = 1;
 	if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
 		cameraActual = 2;
 
+	//SONIDO
+	if (glfwGetKey(window, GLFW_KEY_6) == GLFW_PRESS)
+		musica_General->setAllSoundsPaused(true);
+	if (glfwGetKey(window, GLFW_KEY_5) == GLFW_PRESS)
+		musica_General->setAllSoundsPaused(false);
+
+
+	//KEYFRAMES
 	if (glfwGetKey(window, GLFW_KEY_Y) == GLFW_PRESS)
 		posZ2 -= 0.5f;
 	if (glfwGetKey(window, GLFW_KEY_H) == GLFW_PRESS)
@@ -141,12 +162,11 @@ void my_input(GLFWwindow *window, int key, int scancode, int action, int mode)
 			//First Interpolation				
 			interpolation();
 
+			sonidoActo1 = true;
 			play = true;
 			playIndex = 0;
 			i_curr_steps = 0;
 		}
-		else
-			play = false;
 	}
 
 	//To play KeyFrame animation aereo
@@ -156,12 +176,11 @@ void my_input(GLFWwindow *window, int key, int scancode, int action, int mode)
 			//First Interpolation				
 			interpolation2();
 
+			sonidoActo2 = true;
 			play2 = true;
 			playIndex2 = 0;
 			i_curr_steps2 = 0;
 		}
-		else
-			play2 = false;
 	}
 
 	//To Save a KeyFrame
@@ -207,4 +226,16 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	camera->ProcessMouseScroll(yoffset);
+}
+
+
+void mouseModoLibre(double xpos, double ypos)
+{
+	double xoffset = xpos - lastX;
+	double yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
+	lastX = xpos;
+	lastY = ypos;
+
+	camera->ProcessMouseMovement(xoffset, yoffset);
 }

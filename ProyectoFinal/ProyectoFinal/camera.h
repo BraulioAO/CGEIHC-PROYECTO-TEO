@@ -12,7 +12,9 @@ enum Camera_Movement {
 	FORWARD,
 	BACKWARD,
 	LEFT,
-	RIGHT
+	RIGHT,
+	SUBIR,
+	BAJAR	
 };
 
 // Default camera values
@@ -80,6 +82,13 @@ public:
 			Position -= Right * velocity * aux;
 		if (direction == RIGHT)
 			Position += Right * velocity * aux;
+	}
+
+	void ProcessModoLibre(glm::vec3 pos)
+	{	
+		Position.x = pos.x;
+		Position.y = pos.y;
+		Position.z = pos.z;
 	}
 
 	// Processes input received from a mouse input system. Expects the offset value in both the x and y direction.
